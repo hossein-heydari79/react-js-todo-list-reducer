@@ -22,13 +22,33 @@ function valueReducer(value, action) {
 }
 
 
+function dataReducer(data, action) {
+  switch (action.type) {
+    case "add": {
+      let newData = [...data];
+      newData.push(action.payload);
+      return newData;
+    }
+
+    case "newdata": {
+      return action.payload
+    }
+
+
+    default:
+      return data
+  }
+}
+
+
 function App() {
 
 
   const [value, valueDispatch] = useReducer(valueReducer, "")
+  const [data, dataDispatch] = useReducer(dataReducer, [])
 
   // const [value, setValue] = useState("");
-  const [data, setData] = useState([])
+  // const [data, setData] = useState([])
   const [btnValue, setBtnValue] = useState("ADD")
 
   const input = useRef();
@@ -67,12 +87,19 @@ function App() {
     }
     else {
       if (data.length === 0 || index === -1) {
-        setData([
-          ...data, {
+        // setData([
+        //   ...data, {
+        //     text: value,
+        //     editMode: false
+        //   }
+        // ])
+        dataDispatch({
+          type: "add", payload: {
             text: value,
             editMode: false
           }
-        ])
+
+        })
         valueDispatch({ type: "empty" })
 
 
@@ -103,7 +130,7 @@ function App() {
           progress: undefined,
         });
 
-        setData(newData);
+        dataDispatch({ type: "newdata", payload: newData })
 
         setBtnValue("ADD");
         // setValue("");
@@ -125,7 +152,7 @@ function App() {
     valueDispatch({ type: "add", payload: newData[index].text })
     setBtnValue("EDIT");
 
-    setData(newData);
+    dataDispatch({ type: "newdata", payload: newData })
 
   }
 
@@ -146,7 +173,7 @@ function App() {
       progress: undefined,
     });
 
-    setData(newData);
+    dataDispatch({ type: "newdata", payload: newData })
   }
 
 
