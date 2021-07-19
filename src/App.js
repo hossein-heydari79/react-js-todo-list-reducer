@@ -41,15 +41,29 @@ function dataReducer(data, action) {
 }
 
 
+function btnValueReducer(btnValue, action) {
+  switch (action.type) {
+    case "ADD": {
+      return "ADD"
+    }
+
+    case "EDIT":
+      return "EDIT"
+    default:
+      return btnValue;
+  }
+}
+
 function App() {
 
 
   const [value, valueDispatch] = useReducer(valueReducer, "")
   const [data, dataDispatch] = useReducer(dataReducer, [])
+  const [btnValue, btnValueDispatch] = useReducer(btnValueReducer, "ADD")
 
   // const [value, setValue] = useState("");
   // const [data, setData] = useState([])
-  const [btnValue, setBtnValue] = useState("ADD")
+  // const [btnValue, setBtnValue] = useState("ADD")
 
   const input = useRef();
 
@@ -132,8 +146,9 @@ function App() {
 
         dataDispatch({ type: "newdata", payload: newData })
 
-        setBtnValue("ADD");
+        // setBtnValue("ADD");
         // setValue("");
+        btnValueDispatch({ type: "ADD" })
         valueDispatch({ type: "empty" })
 
       }
@@ -150,8 +165,9 @@ function App() {
     newData[index].editMode = true;
     // setValue(newData[index].text);
     valueDispatch({ type: "add", payload: newData[index].text })
-    setBtnValue("EDIT");
+    // setBtnValue("EDIT");
 
+    btnValueDispatch({ type: "EDIT" })
     dataDispatch({ type: "newdata", payload: newData })
 
   }
