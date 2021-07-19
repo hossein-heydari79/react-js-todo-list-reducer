@@ -1,15 +1,33 @@
 import './App.css';
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useReducer } from 'react'
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { ToastContainer, toast } from 'react-toastify';
 
 
 
+function valueReducer(value, action) {
+  switch (action.type) {
+    case "empty":
+      return ""
+
+    case "add":
+      return (
+        action.payload
+      )
+
+    default:
+      return value
+  }
+}
+
+
 function App() {
 
 
-  const [value, setValue] = useState("");
+  const [value, valueDispatch] = useReducer(valueReducer, "")
+
+  // const [value, setValue] = useState("");
   const [data, setData] = useState([])
   const [btnValue, setBtnValue] = useState("ADD")
 
@@ -55,7 +73,7 @@ function App() {
             editMode: false
           }
         ])
-        setValue("");
+        valueDispatch({ type: "empty" })
 
 
         toast.success('Successfully added!', {
@@ -88,7 +106,8 @@ function App() {
         setData(newData);
 
         setBtnValue("ADD");
-        setValue("");
+        // setValue("");
+        valueDispatch({ type: "empty" })
 
       }
     }
@@ -102,7 +121,8 @@ function App() {
     input.current.focus();
     let newData = [...data];
     newData[index].editMode = true;
-    setValue(newData[index].text);
+    // setValue(newData[index].text);
+    valueDispatch({ type: "add", payload: newData[index].text })
     setBtnValue("EDIT");
 
     setData(newData);
@@ -136,7 +156,7 @@ function App() {
         <h1 className="mt-4">ToDo App</h1>
 
         <div className="form d-flex justify-content-between align-items-center">
-          <input type="text" placeholder="ADD YOUR TASK ..." className="input" ref={input} onInput={(e) => setValue(e.target.value)} value={value} />
+          <input type="text" placeholder="ADD YOUR TASK ..." className="input" ref={input} onInput={(e) => valueDispatch({ type: "add", payload: e.target.value })} value={value} />
           <button className="btn" onClick={set}>{btnValue}</button>
           <ToastContainer style={{ fontSize: '1.5rem' }} />
         </div>
